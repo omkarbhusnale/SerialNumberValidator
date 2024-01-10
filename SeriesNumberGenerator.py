@@ -1,10 +1,13 @@
 import re
 
 def generate_next_serial(series_number):
-    if series_number == 'SZZZZZZZZ':
+    
+    # If Number Out out Boundary then return
+    if series_number == 'SZZZZZZZZ' or series_number == 'S00000000':
         return None
 
     number = None
+    
     # Define a regular expression pattern to match the prefix and number
     pattern = re.compile(r'([A-Za-z]+)(\d+)')
 
@@ -117,41 +120,34 @@ def generate_next_serial(series_number):
         return next_prefix + (9 - len(next_prefix)) * "0"
 
     no_of_zeros = (9 - len(prefix)) * "0"
-    return f'{prefix}{(9 - len(prefix)-1) * "0"}{int(str(int(no_of_zeros) + number).zfill(len(no_of_zeros)))+1}'
+    return f'{prefix}{str(int(no_of_zeros) + number + 1).zfill(len(no_of_zeros))}'
+
 
 # Example Usage:
-current_serial = 'SZZZZZZZY'
-next_serial = generate_next_serial(current_serial)
-print(next_serial)
+# current_serial = 'S00000001'
+# next_serial = generate_next_serial(current_serial)
+# print(next_serial)
 
-# def test_generate_next_serial():
-#     # Test Case 1: Valid input with increment in the number part
-#     assert generate_next_serial('S00000001') == 'S00000002'
+li = [
+    'S00000000', 'S00000001', 'S09999999', 
+    'SA0000000', 'SA9999999', 'SZ9999999', 
+    'SZA000000', 'SZA999999', 'SZZ999999',
+    'SZZA00000', 'SZZA99999', 'SZZZ99999',
+    'SZZZA0000', 'SZZZA9999', 'SZZZZ9999',
+    'SZZZZA000', 'SZZZZA999', 'SZZZZ9999',
+    'SZZZZZA00', 'SZZZZZA99', 'SZZZZZZ99',
+    'SZZZZZZA0', 'SZZZZZZA9', 'SZZZZZZZ0',
+    'SZZZZZZZ9', 'SZZZZZZZA', 'SZZZZZZZY', 'SZZZZZZZZ'
+    ]
+res = []
 
-#     # Test Case 2: Valid input with increment in the prefix and reset the number part
-#     assert generate_next_serial('SZZZZZZZZ') is None  # The function should return None for the maximum value
+for i in range(len(li)):
+    serialNo = generate_next_serial(li[i])
+    if serialNo is not None:
+        res.append(serialNo)
+    else: 
+        res.append("Wrong Input")
 
-#     # Test Case 3: Valid input with increment in the number part, testing for different lengths
-#     assert generate_next_serial('SA0000000') == 'SA0000001'
-#     assert generate_next_serial('SZA000000') == 'SZA000001'
-#     assert generate_next_serial('SZZA00000') == 'SZZA00001'
-#     assert generate_next_serial('SZZZA0000') == 'SZZZA0001'
-#     assert generate_next_serial('SZZZZA000') == 'SZZZZA001'
-#     assert generate_next_serial('SZZZZZA00') == 'SZZZZZA01'
-#     assert generate_next_serial('SZZZZZZA0') == 'SZZZZZZA1'
+for i in range(len(res)):
+    print(li[i] + " --> " + res[i])
 
-#     # Test Case 4: Invalid input
-#     #assert generate_next_serial('XYZ123') is None  # Invalid input, no match with the defined pattern
-
-#     # Test Case 5: Testing for the maximum number in different prefix lengths
-#     assert generate_next_serial('SZZZZZZZA') == 'SZZZZZZZB'
-#     assert generate_next_serial('SZZZZZZZB') == 'SZZZZZZZC'
-
-
-#     # Test Case 6: Testing for the maximum number with the maximum prefix length
-#     #assert generate_next_serial('SZZZZZZZZZZZZZ') is None  # Invalid input, maximum prefix length exceeded
-
-#     print("All test cases passed!")
-
-# # Run the test cases
-# test_generate_next_serial()
